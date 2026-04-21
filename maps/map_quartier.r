@@ -1,11 +1,7 @@
 library(sf) # Pour la manipulation de données géographiques
 library(leaflet) # Pour la création de cartes interactives
 
-chemin_csv <- "projet_ia_web_bd/data/Data_Arbre_Clean.csv"
-if (!file.exists(chemin_csv)) {
-    chemin_csv <- "../data/Data_Arbre_Clean.csv"
-}
-data <- read.csv(chemin_csv)
+data <- read.csv("projet_ia_web_bd/data/Data_Arbre_Clean.csv")
 
 # Les coordonnées X et Y sont deja nettoyées.
 # On garde les lignes avec coordonnées, puis on compte a part celles sans quartier.

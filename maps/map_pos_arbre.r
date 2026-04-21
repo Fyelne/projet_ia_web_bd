@@ -1,11 +1,7 @@
 library(sf)
 library(leaflet)
 
-chemin_csv <- "projet_ia_web_bd/data/Data_Arbre_Clean.csv"
-if (!file.exists(chemin_csv)) {
-    chemin_csv <- "../data/Data_Arbre_Clean.csv"
-}
-data <- read.csv(chemin_csv)
+data <- read.csv("projet_ia_web_bd/data/Data_Arbre_Clean.csv")
 
 # Classification simple des arbres
 # Vert   : arbre en place et associe a un quartier
