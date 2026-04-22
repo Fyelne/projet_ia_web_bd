@@ -92,14 +92,20 @@ df_log$prob_abattre <- pred_prob
 df_log$statut <- ifelse(df_log$a_abattre == 1, "A abattre", "En place")
 
 png("output/regression/fig_log_prob_distribution.png", width = 800, height = 600, res = 100)
-p <- ggplot(df_log, aes(x = prob_abattre, fill = statut)) +
-  geom_histogram(bins = 40, alpha = 0.7, position = "identity") +
-  geom_vline(xintercept = 0.5, linetype = "dashed", color = "black") +
-  scale_fill_manual(values = c("En place" = "blue", "A abattre" = "red"), name = "Realite") +
-  labs(title = "Distribution des prédictions",
-       x = "P(arbre a abattre)", y = "Nombre d'arbres") +
+df_log %>%
+  filter(a_abattre == 0) %>%
+  ggplot(aes(x = prob_abattre)) +
+  geom_histogram(bins = 40, fill = "steelblue", alpha = 0.8) +
+  geom_vline(xintercept = SEUIL, linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text",
+           x     = SEUIL + 0.01,
+           y     = Inf,
+           label = paste("Seuil =", SEUIL),
+           vjust = 2, hjust = 0, color = "red") +
+  labs(title    = "Distribution des probabilités prédites",
+       subtitle = "Les arbres à droite du seuil sont signalés comme à risque",
+       x = "P(arbre à abattre)", y = "Nombre d'arbres") +
   theme_minimal(base_size = 13)
-print(p)
 dev.off()
 
 
