@@ -119,8 +119,8 @@ chi2_calc <- function(var1, var2, label1, label2, df, filename_prefix) {
   png(png_name, width = 850, height = 600, res = 100)
   mosaicplot(tbl,
              main  = paste("Mosaicplot :", label1, "~", label2),
-             xlab  = label1, ylab = label2
-             color = c("blue", "red", "green", "orange", "purple", "gray")
+             xlab  = label1, ylab = label2,
+             color = c("blue", "red", "green", "orange", "purple", "gray"))
   dev.off()
   
   list(table = tbl, test = chi2)
