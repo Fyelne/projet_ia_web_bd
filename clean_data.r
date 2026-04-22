@@ -50,14 +50,14 @@ setup_data <- function(raw_data) {
   df$clc_quartier  <- factor(df$clc_quartier)
   
   # convertir les string en date (toutes les valeurs sont en utc)
-  data <- data %>%
+  df <- df %>%
     mutate(
       dte_plantation = as.POSIXct(dte_plantation, format = "%Y/%m/%d %H:%M:%S", tz = "UTC"),
       dte_abattage   = as.POSIXct(dte_abattage, format = "%Y/%m/%d %H:%M:%S", tz = "UTC")
     )
   
   # convertir les string en boolean
-  data <- data %>%
+  df <- df %>%
     mutate(
       remarquable = case_when(
         remarquable == "Oui" ~ TRUE,
@@ -72,7 +72,7 @@ setup_data <- function(raw_data) {
       )
     )
   
-  return(data)
+  return(df)
 }
 
 df <- clean_columns(data)
