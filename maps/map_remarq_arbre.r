@@ -8,7 +8,7 @@ arbres_remarquables <- data[
     !is.na(data$remarquable) & data$remarquable == TRUE,
 ]
 
-# Conversion des coordonnees pour la carte
+# Conversion des coordonnées pour la carte
 arbres_sf <- st_as_sf(arbres_remarquables, coords = c("X", "Y"), crs = 3949)
 arbres_wgs84 <- st_transform(arbres_sf, 4326)
 
@@ -16,7 +16,7 @@ coords <- st_coordinates(arbres_wgs84)
 arbres_wgs84$lon <- coords[, 1]
 arbres_wgs84$lat <- coords[, 2]
 
-# Creation de la carte
+# Création de la carte
 carte <- leaflet(arbres_wgs84) %>%
     addTiles() %>%
     addCircleMarkers(

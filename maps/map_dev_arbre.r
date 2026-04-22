@@ -34,14 +34,14 @@ data$couleur[
     data$clc_quartier != ""
 ] <- "red"
 
-# texte pour legende
+# texte pour légende
 data$categorie <- "Aucune données du développement"
 data$categorie[data$couleur == "blue"] <- "Arbre jeune"
 data$categorie[data$couleur == "green"] <- "Arbre adulte"
 data$categorie[data$couleur == "orange"] <- "Arbre vieux"
 data$categorie[data$couleur == "red"] <- "Arbre senescent"
 
-# Conversion des coordonnees vers le format des cartes web
+# Conversion des coordonnées vers le format des cartes web
 arbres_sf <- st_as_sf(data, coords = c("X", "Y"), crs = 3949)
 arbres_wgs84 <- st_transform(arbres_sf, 4326)
 
@@ -49,7 +49,7 @@ coords <- st_coordinates(arbres_wgs84)
 arbres_wgs84$lon <- coords[, 1]
 arbres_wgs84$lat <- coords[, 2]
 
-# Creation de la carte
+# Création de la carte
 carte <- leaflet(arbres_wgs84) %>%
     addTiles() %>%
     addCircleMarkers(
@@ -70,6 +70,6 @@ carte <- leaflet(arbres_wgs84) %>%
             "Arbre senescent",
             "Aucune données du développement"
         ),
-        title = "Type d'arbre"
+        title = "Développement de l'arbre"
     )
 print(carte)
