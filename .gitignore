@@ -1,0 +1,10 @@
+# R
+.Rhistory
+.Rapp.history
+.RData
+.RDataTmp
+.Ruserdata
+
+# Autres
+*.DS_Store
+Thumbs.db
