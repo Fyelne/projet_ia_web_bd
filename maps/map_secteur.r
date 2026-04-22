@@ -1,5 +1,6 @@
 library(sf) # Pour la manipulation de données géographiques
 library(leaflet) # Pour la création de cartes interactives
+library(dplyr) # Pour filter, group_by et summarise
 
 data <- read.csv("projet_ia_web_bd/data/Data_Arbre_Clean.csv")
 

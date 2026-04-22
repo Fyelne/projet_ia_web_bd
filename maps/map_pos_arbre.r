@@ -2,6 +2,7 @@ library(sf)
 library(leaflet)
 
 data <- read.csv("projet_ia_web_bd/data/Data_Arbre_Clean.csv")
+data <- data[!is.na(data$X) & !is.na(data$Y), ]
 
 # Classification simple des arbres
 # Vert   : arbre en place et associé à un quartier
