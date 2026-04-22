@@ -12,7 +12,7 @@ df_reg <- df[, c("age_estim", "tronc_diam", "haut_tot", "fk_stadedev", "fk_situa
 df_reg <- df_reg[complete.cases(df_reg), ]
 
 # Modèle
-mod <- lm(age_estim ~ tronc_diam + haut_tot + fk_stadedev + fk_situation + feuillage,
+mod <- lm(age_estim ~ tronc_diam + haut_tot + fk_stadedev,
           data = df_reg)
 print(summary(mod))
 
@@ -77,7 +77,7 @@ cat(sprintf("Accuracy : %.4f\n", mean(pred_class == df_log$a_abattre)))
 df_confusion <- as.data.frame(confusion_matrix)
 
 # on utilise log freq pour évite que la population 0 occupe toute la matrix
-png("output/regression/fig_matrice_confusion", width = 800, height = 600, res = 100)
+png("output/regression/fig_matrice_confusion.png", width = 800, height = 600, res = 100)
 p <- ggplot(data = df_confusion, aes(x = Reel, y = Predit)) +
   geom_tile(aes(fill = log(Freq + 1)), color = "white", show.legend = FALSE) +
   scale_fill_gradient(low = "white", high = "blue") +
@@ -96,7 +96,7 @@ p <- ggplot(df_log, aes(x = prob_abattre, fill = statut)) +
   geom_histogram(bins = 40, alpha = 0.7, position = "identity") +
   geom_vline(xintercept = 0.5, linetype = "dashed", color = "black") +
   scale_fill_manual(values = c("En place" = "blue", "A abattre" = "red"), name = "Realite") +
-  labs(title = "Distribution des préductions",
+  labs(title = "Distribution des prédictions",
        x = "P(arbre a abattre)", y = "Nombre d'arbres") +
   theme_minimal(base_size = 13)
 print(p)
