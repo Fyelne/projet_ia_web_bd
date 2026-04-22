@@ -1,0 +1,22 @@
+gantt
+    title Projet sur 15 heures - Répartition des tâches
+    dateFormat  HH
+    axisFormat  %HH
+
+    section Andy N.
+    Analyse csv                :a1, 00, 1h
+    Nettoyage des données      :a2, after a1, 3h
+    Visu Corrélation           : a3, after a2, 7h
+    Régression                 : a4, after a3, 3.5h
+
+
+    section Ange C.
+    Analyse csv        :b1, 00, 1h
+    Redac Gantt         :b2, after b1, 1.5h
+    Visu Graph         :b3, after b2, 6h
+    Rédaction Rapport  :b4,00, 15h
+
+
+    section Cholan S.
+    Analyse csv        :c1, 00, 1h
+    Visu Carte         :b3, after b1, 13.5h
