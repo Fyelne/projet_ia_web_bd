@@ -1,7 +1,7 @@
 library(readr)
 library(dplyr)
 
-df <- read_csv('data/Data_Arbre_Input.csv', locale = locale(encoding = "UTF-8"))
+data <- read_csv('data/Data_Arbre_Input.csv', locale = locale(encoding = "UTF-8"))
 
 clean_columns <- function(raw_data) {
   
@@ -14,9 +14,9 @@ clean_columns <- function(raw_data) {
   ) # colonnes à drop (bdd, trop hétérogènes)
   
   # Affichage des arbres ayant les mêmes coordonées (probablement dupliqués)
-  print(sum(duplicated(df[c('X', 'Y')])))
+  print(sum(duplicated(raw_data[c('X', 'Y')])))
   
-  df_clean <- raw_data %>%
+  df <- raw_data %>%
     select(-all_of(columns_to_drop)) %>% # drop des colonnes non intéressantes
     mutate(across(c(nomfrancais, nomlatin), ~na_if(., 'RAS'))) %>% # RAS = vide
     mutate(fk_revetement = na_if(fk_revetement, ' ')) %>% # espace = vide
@@ -32,22 +32,22 @@ clean_columns <- function(raw_data) {
     filter(!(age_estim > 100 & fk_stadedev == "jeune")) %>% # (valeur abérante car décrit comme "jeune" mais centenaire)
     distinct(X, Y, .keep_all = TRUE) # suppression des arbres ayant les mêmes coordonées
   
-  return (df_clean)
+  return (df)
 }
 
 setup_data <- function(raw_data) {
-  data <- raw_data
+  df <- raw_data
   
   # convertir les string en factor
-  data$fk_stadedev   <- factor(data$fk_stadedev,   levels = c("jeune", "adulte", "vieux", "senescent"))
-  data$fk_situation  <- factor(data$fk_situation)
-  data$fk_port       <- factor(data$fk_port)
-  data$fk_pied       <- factor(data$fk_pied)
-  data$fk_revetement <- factor(data$fk_revetement)
-  data$feuillage     <- factor(data$feuillage)
-  data$remarquable   <- factor(data$remarquable)
-  data$fk_arb_etat   <- factor(data$fk_arb_etat)
-  data$clc_quartier  <- factor(data$clc_quartier)
+  df$fk_stadedev   <- factor(df$fk_stadedev,   levels = c("jeune", "adulte", "vieux", "senescent"))
+  df$fk_situation  <- factor(df$fk_situation)
+  df$fk_port       <- factor(df$fk_port)
+  df$fk_pied       <- factor(df$fk_pied)
+  df$fk_revetement <- factor(df$fk_revetement)
+  df$feuillage     <- factor(df$feuillage)
+  df$remarquable   <- factor(df$remarquable)
+  df$fk_arb_etat   <- factor(df$fk_arb_etat)
+  df$clc_quartier  <- factor(df$clc_quartier)
   
   # convertir les string en date (toutes les valeurs sont en utc)
   data <- data %>%
@@ -75,12 +75,12 @@ setup_data <- function(raw_data) {
   return(data)
 }
 
-df_clean <- clean_columns(df)
+df <- clean_columns(data)
 
-df_clean <- setup_data(df_clean)
+df <- setup_data(df)
 
-write_csv(df_clean, "data/Data_Arbre_Clean.csv")
+write_csv(df, "data/Data_Arbre_Clean.csv")
 
-summary(df_clean)
+summary(df)
 
 
