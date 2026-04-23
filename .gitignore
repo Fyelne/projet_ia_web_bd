@@ -5,6 +5,11 @@
 .RDataTmp
 .Ruserdata
 
+# Python
+venv
+__pycache__/
+
 # Autres
 *.DS_Store
 Thumbs.db
+.vscode/settings.json
