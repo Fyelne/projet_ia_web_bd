@@ -25,20 +25,20 @@ def load_file(path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Prédit l'âge estimé d'un arbre."
+        description="Prédit l'âge estimé d'un arbre"
     )
     parser.add_argument('--haut_tot',     type=float, required=True,  help='Hauteur totale (m)')
     parser.add_argument('--haut_tronc',   type=float, required=True,  help='Hauteur du tronc (m)')
     parser.add_argument('--tronc_diam',   type=float, required=True,  help='Diamètre du tronc (cm)')
     parser.add_argument('--fk_stadedev',  type=str,   required=True,
                         choices=['jeune', 'adulte', 'vieux', 'senescent'])
-    parser.add_argument('--fk_situation', type=str,   required=False,
+    parser.add_argument('--fk_situation', type=str,   required=False, default='Alignement',
                         choices=['Alignement', 'Groupe', 'Isolé'])
-    parser.add_argument('--feuillage',    type=str,   required=False,
+    parser.add_argument('--feuillage',    type=str,   required=False, default='Feuillu',
                         choices=['Feuillu', 'Conifère'])
-    parser.add_argument('--fk_port',      type=str,   required=False,
+    parser.add_argument('--fk_port',      type=str,   required=False, default='semi libre',
                         help='Ex: "semi libre", "libre", "réduit"')
-    parser.add_argument('--clc_nbr_diag', type=int,   required=False,
+    parser.add_argument('--clc_nbr_diag', type=int,   required=False, default=0,
                         help='Nombre de diagnostics effectués sur l\'arbre')
     args = parser.parse_args()
 
@@ -52,7 +52,7 @@ def main():
         'fk_stadedev' : args.fk_stadedev,
         'fk_situation': args.fk_situation,
         'feuillage'   : args.feuillage,
-        'fk_port'     : args.fk_port.lower().strip(),
+        'fk_port'     : args.fk_port.lower().strip() if args.fk_port else None,
         'clc_nbr_diag': args.clc_nbr_diag
     }])
 
