@@ -34,8 +34,6 @@ def main():
                         help='Nom latin de l\'arbre')
     args = parser.parse_args()
 
-    # Chargement du modèle
-
     # Construction du DataFrame
     arbre = pd.DataFrame([{
         'haut_tot'    : args.haut_tot,

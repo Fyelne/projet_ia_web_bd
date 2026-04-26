@@ -54,7 +54,7 @@ sorted_clusters = cluster_means.sort_values().index.tolist()
 mapping = {old: new for new, old in enumerate(sorted_clusters)}
 
 # Sauvegarde du mapping pour la prédiction
-joblib.dump(mapping, "mapping_clusters.pkl")
+joblib.dump(mapping, f"mapping_clusters_{k}.pkl")
 data['cluster'] = data['cluster'].map(mapping)
 
 # Attribution des noms
@@ -86,7 +86,7 @@ print("Calinski-Harabasz Index :", calinski)
 print("Davies-Bouldin Index :", davies)
 
 # Sauvegarde du modèle
-joblib.dump(kmeans, "modele_kmeans.pkl")
+joblib.dump(kmeans, f"modele_kmeans_{k}.pkl")
 print("\nModèle sauvegardé")
 
 
