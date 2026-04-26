@@ -32,8 +32,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Prédit l'âge estimé d'un arbre"
     )
-    parser.add_argument('--haut_tot',     type=float, required=True,  help='Hauteur totale (m)')
-    parser.add_argument('--nb_clusters',  type=str,   required=False,  choices=["2", "3"], default="3",
+    parser.add_argument('--haut_tot', type=float, required=True, help='Hauteur totale (m)')
+    parser.add_argument('--nb_clusters', type=str, required=False, choices=["2", "3"], default="3",
                         help='Nombre de clusters (2 -> [Petit, Grand], 3 -> [Petit, Moyen, Grand])')
     args = parser.parse_args()
 

@@ -24,14 +24,14 @@ def main():
     parser = argparse.ArgumentParser(
         description="Prédit l'âge estimé d'un arbre"
     )
-    parser.add_argument('--haut_tot',     type=float, required=True,  help='Hauteur totale (m)')
-    parser.add_argument('--haut_tronc',   type=float, required=True,  help='Hauteur du tronc (m)')
-    parser.add_argument('--tronc_diam',   type=float, required=True,  help='Diamètre du tronc (cm)')
-    parser.add_argument('--fk_stadedev',  type=str,   required=True,
+    parser.add_argument('--haut_tot', type=float, required=True, help='Hauteur totale (m)')
+    parser.add_argument('--haut_tronc', type=float, required=True, help='Hauteur du tronc (m)')
+    parser.add_argument('--tronc_diam', type=float, required=True, help='Diamètre du tronc (cm)')
+    parser.add_argument('--fk_stadedev', type=str, required=True,
                         choices=['jeune', 'adulte', 'vieux', 'senescent'], 
-                        help='Stade de developpement de l\'arbre')
+                        help="Stade de developpement de l'arbre")
     parser.add_argument('--nomlatin', type=str, required=False, default='TILCOR', 
-                        help='Nom latin de l\'arbre')
+                        help="Nom latin de l'arbre")
     args = parser.parse_args()
 
     # Construction du DataFrame

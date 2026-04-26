@@ -15,7 +15,7 @@ SEUIL = 0.2 # seuil retenu pour une classification acceptable
 
 
 # donnée du csv pour avoir val par default (moyenne) si aucune donnée entré par l'utiilisateur
-df = pd.read_csv("Data_Arbre_Clean.csv")
+df = pd.read_csv("../../data/Data_Arbre_Clean.csv")
 df[FEATURES_NUM] = np.log1p(df[FEATURES_NUM])
 
 MOY = df[FEATURES_NUM].median()
@@ -77,6 +77,7 @@ class App(QWidget):
             val = self.inputs[col].currentText()
             d[col] = val if val else DEF[col]
 
+        print(pd.DataFrame([d])[FEATURES])
         # % prédit
         proba = model.predict_proba(pd.DataFrame([d])[FEATURES])[0, 1]
 

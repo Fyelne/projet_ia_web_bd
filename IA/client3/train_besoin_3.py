@@ -15,11 +15,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (classification_report, confusion_matrix, accuracy_score,
                              ConfusionMatrixDisplay, PrecisionRecallDisplay, RocCurveDisplay,
                              average_precision_score)
-from imblearn.pipeline import Pipeline as ImbPipeline
+from sklearn.pipeline import Pipeline as ImbPipeline
 
 
 # csv 
-df = pd.read_csv("Data_Arbre_Clean.csv")
+df = pd.read_csv("../../data/Data_Arbre_Clean.csv")
 
 for col in ["tronc_diam", "haut_tot", "haut_tronc", "age_estim", "X", "Y"]:
     df[col] = np.log1p(df[col])
@@ -153,4 +153,4 @@ plt.show()
 
 # svgrd modedl
 joblib.dump(best_model, "modele_tempete.pkl")
-print("✅ Modèle sauvegardé : modele_tempete.pkl")
+print("Modèle sauvegardé : modele_tempete.pkl")
