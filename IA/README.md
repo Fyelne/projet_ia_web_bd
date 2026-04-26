@@ -77,3 +77,23 @@ python script.py --haut_tot 12.0  --haut_tronc 2.5 --tronc_diam 150 --fk_stadede
 ```
 
 ### Client 3
+
+Se déplacer dans le dossier client3
+
+```bash
+cd client3
+```
+
+Exemples:
+
+```bash
+# Arbre sans risque
+python script.py --haut_tot 2.3 --haut_tronc 1.1 --tronc_diam 4.6 --age_estim 3.4 \
+      --fk_port "semi libre" --fk_pied gazon --nomfrancais POPALB \
+      --clc_quartier HARLY --clc_secteur "Rue Laplace"
+
+# Arbre avec risque
+python script.py --haut_tot 27.0 --haut_tronc 12.0 --tronc_diam 310 --age_estim 100 \
+      --fk_port "semi libre" --fk_pied gazon --nomfrancais POPALB \
+      --clc_quartier HARLY --clc_secteur "Rue Laplace"
+```
