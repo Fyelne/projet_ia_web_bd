@@ -157,6 +157,122 @@ Le travail est structuré en trois parties principales : Big Data, Intelligence 
 
 #heading(numbering: none)[Partie IA: ]
 
+= Besoin client 2 : Modèle de prédiction de l'âge
+
+== Objectif
+
+Le *Client 2* souhaite estimer l'âge des arbres de Saint-Quentin.
+
+=== Variable cible
+La base de données initiale fournit une donnée nommée `age_estim`, mais celle-ci est parfois incomplète ou difficile à vérifier. 
+
+L'enjeu est de pouvoir déduire l'âge d'un spécimen à partir de ses caractéristiques physiques mesurables telles que :
+- La hauteur totale et la hauteur du tronc.
+- Le diamètre du tronc.
+- Le stade de développement apparent.
+- Le nom latin de l'espèce
+
+Plutôt que de prédire une valeur numérique exacte (régression), le modèle utilisera la classification multi-classe. L'objectif est de classer chaque arbre dans l'une des quatre catégories suivantes (Jeune, Jeune Adulte, Adulte, Vieux)
+
+#figure(
+      image("../graph/client2_distribution.png", width: 100%),
+      caption: [
+        Matrice de confusion
+      ],
+    ),
+#v(0.3em)
+
+== Préparation des données
+
+=== Analyse de la distribution de la variable cible
+La variable `age_estim` possède une distribution hétérogène. Afin de faciliter l'apprentissage, nous avons procédé à une transformation de cette variable continue en classes catégorielles.
+
+=== Traitement des valeurs manquantes et aberrantes
+Conformément aux observations du notebook, les étapes suivantes ont été appliquées :
+- *Imputation* : Utilisation de la médiane pour combler les valeurs manquantes sur les variables numériques (`haut_tot`, `tronc_diam`) et utilisation de la valeur la plus fréquente pour les variables qualitatives
+- *Filtrage* : Supression des arbres n'ayant pas d'âge
+- *Ajout de variable* : Pour mieux interpréter les valeurs de diamètre et de hauteur du tronc une nouvelle valeur ratio diamètre/hauteur a été ajoutée au dataset.
+
+== Développement et évaluation des modèles
+
+L'objectif de cette phase est de comparer différentes techniques d'apprentissage supervisé pour identifier celle qui généralise le mieux la prédiction des classes d'âge.
+
+=== Stratégie d'entraînement
+Pour garantir la robustesse des résultats, nous avons utilisé un découpage classique des données en ensemble d'entraînement et de test ($80% / 20%$). Une *Stratified K-Fold* a été privilégiée lors de la validation croisée afin de maintenir la proportion des classes d'âge dans chaque échantillon.
+
+=== Modèle de référence : Régression Logistique
+Nous avons débuté par une *Régression Logistique* servant de cas générique. Malgré sa simplicité, ce modèle linéaire permet de vérifier si les variables (diamètre, hauteur) présentent une corrélation directe et simple avec l'âge. 
+
+=== Decision Tree et Optimisation
+L'utilisation d'un *DecisionTreeClassifier* a permis de capturer des relations non-linéaires. Pour limiter le sur-apprentissage, nous avons procédé à une recherche d'hyperparamètres via *RandomizedSearchCV*, en agissant notamment sur :
+- `max_depth` : Profondeur maximale de l'arbre.
+- `min_samples_split` : Nombre minimum d'échantillons pour diviser un nœud.
+
+=== Modèle Final : Forêt Aléatoire (Random Forest)
+Le modèle retenu est *Random Forest*. En combinant plusieurs arbres de décision, cette méthode réduit significativement la variance des erreurs. 
+
+== Analyse des résultats et performances
+
+L'évaluation de notre modèle de classification final s'appuie sur une analyse multicritère afin de valider sa capacité à distinguer les quatre phases de vie des arbres.
+
+=== Performance globale
+Le modèle Random Forest affiche une précision globale satisfaisante. Toutefois, l'analyse détaillée par classe révèle des disparités de performance sur les classes extrêmes ("Vieux" notamment) qui disposent de moins d'échantillons.
+
+=== Matrice de confusion
+La matrice de confusion nous permet d'observer les erreurs de classement. On remarque que les erreurs se font majoritairement vers les classes adjacentes (par exemple, un "Jeune Adulte" classé en "Adulte").
+
+#figure(
+      image("../graph/client2_confusion.png", width: 100%),
+      caption: [
+        Matrice de confusion
+      ],
+    ),
+#v(0.3em)
+
+=== Analyse des scores Précision et Rappel
+#figure(
+      image("../graph/client2_accuracy.png", width: 100%),
+      caption: [
+        Performance relative du modèle final
+      ],
+    ),
+#v(0.3em)
+
+- Random Forest (Bleu) : Le plus performant avec un score d'environ 84 %.
+- Decision Tree (Orange) : Performance intermédiaire, proche de 80 %.
+- Logistic Regression (Vert) : Le moins performant, se situant autour de 69 %.
+
+Le Random Forest et le Decision Tree surpassent nettement la Régression Logistique. Cela confirme que les relations entre vos variables (diamètre, hauteur, stade développement etc.) et l'âge de l'arbre ne sont pas purement linéaires, ce qui explique pourquoi la régression logistique peine à capturer toute la complexité du phénomène.
+
+=== Importance des variables
+
+#figure(
+      image("../graph/client2_importance.png", width: 100%),
+      caption: [
+        Importance des caractéristiques
+      ],
+    ),
+#v(0.3em)
+L'analyse de l'importance des caractéristiques montre que le diamètre du tronc est le facteur le plus déterminant dans la prédiction de l'âge, suivi par le stade de développement, le nom latin, la hauteur totale, le ratio diamètre/hauteur puis le hauteur du tronc.
+
+== Conclusion et Scripts
+
+L'étude menée pour le Client 2 démontre qu'il est possible d'estimer avec une fiabilité satisfaisante la catégorie d'âge d'un arbre à partir de données dendrométriques simples (hauteur et diamètre). Le modèle final de Random Forest offre un équilibre robuste entre précision et capacité de généralisation.
+
+=== Script d'exploitation :
+*Fonctionnalités du script :*
+- *Chargement du modèle* : Il importe le modèle complet (`StandardScaler` + `RandomForest`) sauvegardé au format `.pkl` lors de la phase d'entraînement.
+- *Traitement des entrées* : Le script accepte les mesures brutes de l'arbre, calcule automatiquement le ratio diamètre/hauteur (caractéristique clé identifiée lors de l'analyse) et applique les transformations nécessaires.
+- *Résultat instantané* : Il retourne la classe d'âge prédite ainsi que l'indice de confiance associé à la prédiction.
+
+=== Utilisation du script :
+
+Pour utiliser le script il suffit de lancer le terminal au niveau du fichier script et de lancer la commande :
+
+```bash
+python script.py --haut_tot 12.0  --haut_tronc 2.5 --tronc_diam 150 --fk_stadedev adulte --nomlatin TILCOR
+```
+
 = Besoin client 3 : Système d'alerte pour les tempêtes
 
 
@@ -324,7 +440,7 @@ Après exploration des seuils, *0.2* a été retenu : pour maximiser le rappel q
 )
 ]
 
- #figure(
+#figure(
       image("../graph/info_graph.png", width: 100%),
       caption: [
         Performance relative du modèle final
