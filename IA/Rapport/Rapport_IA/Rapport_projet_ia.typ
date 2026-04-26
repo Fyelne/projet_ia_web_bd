@@ -254,7 +254,7 @@ La visualisation sur carte apporte une dimension supplémentaire en permettant u
 
 == Objectif
 
-Le *Client 2* souhaite estimer l'âge des arbres de Saint-Quentin.
+Le Client 2 souhaite estimer l'âge des arbres de Saint-Quentin.
 
 === Variable cible
 La base de données initiale fournit une donnée nommée `age_estim`, mais celle-ci est parfois incomplète ou difficile à vérifier. 
