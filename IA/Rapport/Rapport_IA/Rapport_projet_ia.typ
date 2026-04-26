@@ -157,6 +157,215 @@ Le travail est structuré en trois parties principales : Big Data, Intelligence 
 
 #heading(numbering: none)[Partie IA: ]
 
+= Besoin client 1 : Visualisation sur carte
+
+== Objectif
+
+L’objectif de ce besoin est d’afficher sur une carte les différents arbres plantés dans la ville de Saint-Quentin selon leurs tailles. Pour cela, nous utilisons une IA qui s’occupe d’étudier les données puis de trier les arbres en fonction de qu’ils sont grands ou petits, avec deux clusters, ou alors s’ils sont grands, moyens ou petits, avec trois clusters.
+
+Cela permet de mieux visualiser la répartition des arbres dans la ville.
+
+== Préparation des données
+
+Pour permettre à notre IA d’étudier correctement les différents arbres, nous devons lui fournir une base de données nettoyée et préparée. Cela a été effectué durant le précédent TP BIG DATA, où nous avons retiré les doublons, et les données aberrantes.
+
+Ensuite, nous utilisons trois colonnes de notre fichier CSV :
+
+- X pour la longitude
+- Y pour la latitude
+- haut_tot pour avoir la hauteur totale de l’arbre
+
+Également, pour rajouter un tri pour mon objectif, nous avons supprimé les arbres ayant des valeurs manquantes ou des hauteurs nulles. Cela permet de garder les arbres plantés ou les données cohérentes pour le traitement de ces dernières.
+
+De plus, pour l’apprentissage non-supervisé, nous avons gardé qu’une seule donnée pour réaliser l’étude, la hauteur totale. Nous n’avons pas gardé par exemple le diamètre, qui ne permettait pas d’avoir une cohérence dans le tri des arbres.
+
+== Apprentissage non-supervisé
+
+Pour regrouper les arbres selon leur taille, nous avons utilisé un algorithme de clustering.
+
+Nous avons choisi la méthode des K-means car cela est idéal pour notre utilisation : adapté aux données numériques, simple d’utilisation et permet de fixer directement le nombre de groupes.
+
+Deux cas ont été étudiés :
+
+- k = 2 (petit / grand)
+- k = 3 (petit / moyen / grand)
+
+Les clusters obtenus ont ensuite été triés selon la hauteur moyenne afin d’attribuer un sens aux groupes.
+
+== Évaluation du clustering
+
+Afin d’évaluer la qualité des clusters mis en place, trois métriques ont été utilisées :
+
+- Silhouette Coefficient : mesure la cohérence des groupes
+- Calinski-Harabasz Index : mesure la séparation entre les clusters
+- Davies-Bouldin Index : mesure le chevauchement des clusters
+
+Les résultats obtenus permettent de montrer la bonne séparation et la cohérence entre les clusters. Cela permet de confirmer que la hauteur est une variable pertinente pour distinguer les tailles des arbres.
+
+== Visualisation sur carte
+
+Les arbres ont été représentés sur une carte grâce à la bibliothèque Plotly.
+
+Les coordonnées ont été converties en format GPS afin d’être affichées correctement sur la carte générée.
+
+Selon le choix du nombre de clusters, deux cartes peuvent être générées. L’une avec trois couleurs pour le choix de petit / moyen / grand et l’autre carte avec deux couleurs pour petit / grand.
+
+Chaque arbre est affiché avec :
+
+- Une couleur correspondant à sa catégorie (petit, moyen, grand ou petit, grand)
+- Un affichage interactif permettant de consulter ses informations
+
+Cette visualisation permet d’observer la répartition spatiale des arbres selon leur taille dans la ville de Saint-Quentin de manière simple et compréhensible par tous.
+
+=== Carte des arbres - 2 Clusters
+
+#figure(
+      image("../graph/client1_2clusters.png", width: 80%),
+      caption: [
+        Carte 
+      ],
+    ),
+
+=== Carte des arbres - 3 Clusters
+
+#figure(
+      image("../graph/client1_3clusters.png", width: 80%),
+      caption: [
+        Matrice de confusion
+      ],
+    ),
+#v(0.3em)
+
+== Script de prédiction
+
+En plus du premier script permettant l’affichage de la répartition des arbres, un modèle est généré permettant ensuite de prédire un arbre en fonction de sa hauteur.
+
+Ce script charge le modèle préalablement entraîné, ne relance pas l’apprentissage, ce qui permet un gain de temps et une cohérence avec les données initiales.
+
+Il retourne ensuite le cluster et le type d’arbre associé. Cela permet donc une utilisation simple et rapide du modèle généré dans le premier script.
+
+== Conclusion
+
+Le clustering permet de regrouper de manière efficace les arbres selon leur taille sans avoir besoin de réalisé un étiquetage de données.
+
+La visualisation sur carte apporte une dimension supplémentaire en permettant une analyse de la répartition géographique des arbres à Saint-Quentin.
+
+= Besoin client 2 : Modèle de prédiction de l'âge
+
+== Objectif
+
+Le Client 2 souhaite estimer l'âge des arbres de Saint-Quentin.
+
+=== Variable cible
+La base de données initiale fournit une donnée nommée `age_estim`, mais celle-ci est parfois incomplète ou difficile à vérifier. 
+
+L'enjeu est de pouvoir déduire l'âge d'un spécimen à partir de ses caractéristiques physiques mesurables telles que :
+- La hauteur totale et la hauteur du tronc.
+- Le diamètre du tronc.
+- Le stade de développement apparent.
+- Le nom latin de l'espèce
+
+Plutôt que de prédire une valeur numérique exacte (régression), le modèle utilisera la classification multi-classe. L'objectif est de classer chaque arbre dans l'une des quatre catégories suivantes (Jeune, Jeune Adulte, Adulte, Vieux)
+
+#figure(
+      image("../graph/client2_distribution.png", width: 100%),
+      caption: [
+        Distribution des classes
+      ],
+    ),
+#v(0.3em)
+
+== Préparation des données
+
+=== Analyse de la distribution de la variable cible
+La variable `age_estim` possède une distribution hétérogène. Afin de faciliter l'apprentissage, nous avons procédé à une transformation de cette variable continue en classes catégorielles.
+
+=== Traitement des valeurs manquantes et aberrantes
+Conformément aux observations du notebook, les étapes suivantes ont été appliquées :
+- *Imputation* : Utilisation de la médiane pour combler les valeurs manquantes sur les variables numériques (`haut_tot`, `tronc_diam`) et utilisation de la valeur la plus fréquente pour les variables qualitatives
+- *Filtrage* : Supression des arbres n'ayant pas d'âge
+- *Ajout de variable* : Pour mieux interpréter les valeurs de diamètre et de hauteur du tronc une nouvelle valeur ratio diamètre/hauteur a été ajoutée au dataset.
+
+== Développement et évaluation des modèles
+
+L'objectif de cette phase est de comparer différentes techniques d'apprentissage supervisé pour identifier celle qui généralise le mieux la prédiction des classes d'âge.
+
+=== Stratégie d'entraînement
+Pour garantir la robustesse des résultats, nous avons utilisé un découpage classique des données en ensemble d'entraînement et de test (80% / 20%). Une *Stratified K-Fold* a été privilégiée lors de la validation croisée afin de maintenir la proportion des classes d'âge dans chaque échantillon.
+
+=== Modèle de référence : Régression Logistique
+Nous avons débuté par une *Régression Logistique* servant de cas générique. Malgré sa simplicité, ce modèle linéaire permet de vérifier si les variables (diamètre, hauteur) présentent une corrélation directe et simple avec l'âge. 
+
+=== Decision Tree et Optimisation
+L'utilisation d'un *DecisionTreeClassifier* a permis de capturer des relations non-linéaires. Pour limiter le sur-apprentissage, nous avons procédé à une recherche d'hyperparamètres via *RandomizedSearchCV*, en agissant notamment sur :
+- `max_depth` : Profondeur maximale de l'arbre.
+- `min_samples_split` : Nombre minimum d'échantillons pour diviser un nœud.
+
+=== Modèle Final : Forêt Aléatoire (Random Forest)
+Le modèle retenu est *Random Forest*. En combinant plusieurs arbres de décision, cette méthode réduit significativement la variance des erreurs. 
+
+== Analyse des résultats et performances
+
+L'évaluation de notre modèle de classification final s'appuie sur une analyse multicritère afin de valider sa capacité à distinguer les quatre phases de vie des arbres.
+
+=== Performance globale
+Le modèle Random Forest affiche une précision globale satisfaisante. Toutefois, l'analyse détaillée par classe révèle des disparités de performance sur les classes extrêmes ("Vieux" notamment) qui disposent de moins d'échantillons.
+
+=== Matrice de confusion
+La matrice de confusion nous permet d'observer les erreurs de classement. On remarque que les erreurs se font majoritairement vers les classes adjacentes (par exemple, un "Jeune Adulte" classé en "Adulte").
+
+#figure(
+      image("../graph/client2_confusion.png", width: 100%),
+      caption: [
+        Matrice de confusion
+      ],
+    ),
+#v(0.3em)
+
+=== Analyse des scores Précision et Rappel
+#figure(
+      image("../graph/client2_accuracy.png", width: 100%),
+      caption: [
+        Performance relative du modèle final
+      ],
+    ),
+#v(0.3em)
+
+- Random Forest (Bleu) : Le plus performant avec un score d'environ 84 %.
+- Decision Tree (Orange) : Performance intermédiaire, proche de 80 %.
+- Logistic Regression (Vert) : Le moins performant, se situant autour de 69 %.
+
+Le Random Forest et le Decision Tree surpassent nettement la Régression Logistique. Cela confirme que les relations entre vos variables (diamètre, hauteur, stade développement etc.) et l'âge de l'arbre ne sont pas purement linéaires, ce qui explique pourquoi la régression logistique peine à capturer toute la complexité du phénomène.
+
+=== Importance des variables
+
+#figure(
+      image("../graph/client2_importance.png", width: 100%),
+      caption: [
+        Importance des caractéristiques
+      ],
+    ),
+#v(0.3em)
+L'analyse de l'importance des caractéristiques montre que le diamètre du tronc est le facteur le plus déterminant dans la prédiction de l'âge, suivi par le stade de développement, le nom latin, la hauteur totale, le ratio diamètre/hauteur puis le hauteur du tronc.
+
+== Conclusion et Scripts
+
+L'étude menée pour le Client 2 démontre qu'il est possible d'estimer avec une fiabilité satisfaisante la catégorie d'âge d'un arbre à partir de données dendrométriques simples (hauteur et diamètre). Le modèle final de Random Forest offre un équilibre robuste entre précision et capacité de généralisation.
+
+=== Script d'exploitation :
+*Fonctionnalités du script :*
+- *Chargement du modèle* : Il importe le modèle complet (`StandardScaler` + `RandomForest`) sauvegardé au format `.pkl` lors de la phase d'entraînement.
+- *Traitement des entrées* : Le script accepte les mesures brutes de l'arbre, calcule automatiquement le ratio diamètre/hauteur (caractéristique clé identifiée lors de l'analyse) et applique les transformations nécessaires.
+- *Résultat instantané* : Il retourne la classe d'âge prédite ainsi que l'indice de confiance associé à la prédiction.
+
+=== Utilisation du script :
+
+Pour utiliser le script il suffit de lancer le terminal au niveau du fichier script et de lancer la commande :
+
+```bash
+python script.py --haut_tot 12.0  --haut_tronc 2.5 --tronc_diam 150 --fk_stadedev adulte --nomlatin TILCOR
+```
+
 = Besoin client 3 : Système d'alerte pour les tempêtes
 
 
@@ -324,7 +533,7 @@ Après exploration des seuils, *0.2* a été retenu : pour maximiser le rappel q
 )
 ]
 
- #figure(
+#figure(
       image("../graph/info_graph.png", width: 100%),
       caption: [
         Performance relative du modèle final
