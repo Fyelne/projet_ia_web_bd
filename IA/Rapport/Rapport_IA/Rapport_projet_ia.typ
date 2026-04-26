@@ -157,6 +157,99 @@ Le travail est structuré en trois parties principales : Big Data, Intelligence 
 
 #heading(numbering: none)[Partie IA: ]
 
+= Besoin client 1 : Visualisation sur carte
+
+== Objectif
+
+L’objectif de ce besoin est d’afficher sur une carte les différents arbres plantés dans la ville de Saint-Quentin selon leurs tailles. Pour cela, nous utilisons une IA qui s’occupe d’étudier les données puis de trier les arbres en fonction de qu’ils sont grands ou petits, avec deux clusters, ou alors s’ils sont grands, moyens ou petits, avec trois clusters.
+
+Cela permet de mieux visualiser la répartition des arbres dans la ville.
+
+== Préparation des données
+
+Pour permettre à notre IA d’étudier correctement les différents arbres, nous devons lui fournir une base de données nettoyée et préparée. Cela a été effectué durant le précédent TP BIG DATA, où nous avons retiré les doublons, et les données aberrantes.
+
+Ensuite, nous utilisons trois colonnes de notre fichier CSV :
+
+- X pour la longitude
+- Y pour la latitude
+- haut_tot pour avoir la hauteur totale de l’arbre
+
+Également, pour rajouter un tri pour mon objectif, nous avons supprimé les arbres ayant des valeurs manquantes ou des hauteurs nulles. Cela permet de garder les arbres plantés ou les données cohérentes pour le traitement de ces dernières.
+
+De plus, pour l’apprentissage non-supervisé, nous avons gardé qu’une seule donnée pour réaliser l’étude, la hauteur totale. Nous n’avons pas gardé par exemple le diamètre, qui ne permettait pas d’avoir une cohérence dans le tri des arbres.
+
+== Apprentissage non-supervisé
+
+Pour regrouper les arbres selon leur taille, nous avons utilisé un algorithme de clustering.
+
+Nous avons choisi la méthode des K-means car cela est idéal pour notre utilisation : adapté aux données numériques, simple d’utilisation et permet de fixer directement le nombre de groupes.
+
+Deux cas ont été étudiés :
+
+- k = 2 (petit / grand)
+- k = 3 (petit / moyen / grand)
+
+Les clusters obtenus ont ensuite été triés selon la hauteur moyenne afin d’attribuer un sens aux groupes.
+
+== Évaluation du clustering
+
+Afin d’évaluer la qualité des clusters mis en place, trois métriques ont été utilisées :
+
+- Silhouette Coefficient : mesure la cohérence des groupes
+- Calinski-Harabasz Index : mesure la séparation entre les clusters
+- Davies-Bouldin Index : mesure le chevauchement des clusters
+
+Les résultats obtenus permettent de montrer la bonne séparation et la cohérence entre les clusters. Cela permet de confirmer que la hauteur est une variable pertinente pour distinguer les tailles des arbres.
+
+== Visualisation sur carte
+
+Les arbres ont été représentés sur une carte grâce à la bibliothèque Plotly.
+
+Les coordonnées ont été converties en format GPS afin d’être affichées correctement sur la carte générée.
+
+Selon le choix du nombre de clusters, deux cartes peuvent être générées. L’une avec trois couleurs pour le choix de petit / moyen / grand et l’autre carte avec deux couleurs pour petit / grand.
+
+Chaque arbre est affiché avec :
+
+- Une couleur correspondant à sa catégorie (petit, moyen, grand ou petit, grand)
+- Un affichage interactif permettant de consulter ses informations
+
+Cette visualisation permet d’observer la répartition spatiale des arbres selon leur taille dans la ville de Saint-Quentin de manière simple et compréhensible par tous.
+
+=== Carte des arbres - 2 Clusters
+
+#figure(
+      image("../graph/client1_2clusters.png", width: 80%),
+      caption: [
+        Carte 
+      ],
+    ),
+
+=== Carte des arbres - 3 Clusters
+
+#figure(
+      image("../graph/client1_3clusters.png", width: 80%),
+      caption: [
+        Matrice de confusion
+      ],
+    ),
+#v(0.3em)
+
+== Script de prédiction
+
+En plus du premier script permettant l’affichage de la répartition des arbres, un modèle est généré permettant ensuite de prédire un arbre en fonction de sa hauteur.
+
+Ce script charge le modèle préalablement entraîné, ne relance pas l’apprentissage, ce qui permet un gain de temps et une cohérence avec les données initiales.
+
+Il retourne ensuite le cluster et le type d’arbre associé. Cela permet donc une utilisation simple et rapide du modèle généré dans le premier script.
+
+== Conclusion
+
+Le clustering permet de regrouper de manière efficace les arbres selon leur taille sans avoir besoin de réalisé un étiquetage de données.
+
+La visualisation sur carte apporte une dimension supplémentaire en permettant une analyse de la répartition géographique des arbres à Saint-Quentin.
+
 = Besoin client 2 : Modèle de prédiction de l'âge
 
 == Objectif
@@ -177,7 +270,7 @@ Plutôt que de prédire une valeur numérique exacte (régression), le modèle u
 #figure(
       image("../graph/client2_distribution.png", width: 100%),
       caption: [
-        Matrice de confusion
+        Distribution des classes
       ],
     ),
 #v(0.3em)
