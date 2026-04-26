@@ -291,7 +291,7 @@ Conformément aux observations du notebook, les étapes suivantes ont été appl
 L'objectif de cette phase est de comparer différentes techniques d'apprentissage supervisé pour identifier celle qui généralise le mieux la prédiction des classes d'âge.
 
 === Stratégie d'entraînement
-Pour garantir la robustesse des résultats, nous avons utilisé un découpage classique des données en ensemble d'entraînement et de test ($80% / 20%$). Une *Stratified K-Fold* a été privilégiée lors de la validation croisée afin de maintenir la proportion des classes d'âge dans chaque échantillon.
+Pour garantir la robustesse des résultats, nous avons utilisé un découpage classique des données en ensemble d'entraînement et de test (80% / 20%). Une *Stratified K-Fold* a été privilégiée lors de la validation croisée afin de maintenir la proportion des classes d'âge dans chaque échantillon.
 
 === Modèle de référence : Régression Logistique
 Nous avons débuté par une *Régression Logistique* servant de cas générique. Malgré sa simplicité, ce modèle linéaire permet de vérifier si les variables (diamètre, hauteur) présentent une corrélation directe et simple avec l'âge. 
