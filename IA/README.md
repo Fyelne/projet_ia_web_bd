@@ -29,8 +29,7 @@ python script.py -h
 Exemples:
 
 ```bash
-python script.py --haut_tot 12.0  --haut_tronc 2.5 --tronc_diam 150 --fk_stadedev adulte \
-    --fk_situation Alignement --feuillage Feuillu --fk_port "réduit relâché" --clc_nbr_diag 2
+python script.py --haut_tot 12.0  --haut_tronc 2.5 --tronc_diam 150 --fk_stadedev adulte --nomlatin TILCOR
 
 
 # Seulement avec les valeurs requises

@@ -45,8 +45,11 @@ def main():
         'nomlatin'    : args.nomlatin,
     }])
 
+    # diam haut ratio
+    arbre['diam_haut_ratio'] = arbre['tronc_diam'] / arbre['haut_tot']
+
     # Application des transformations (dans le même ordre que le notebook)
-    model = joblib.load('model_age_prediction.pkl')
+    model = joblib.load('model_age_classification.pkl')
     prediction = model.predict(arbre)[0]
 
     print(f"Hauteur totale : {args.haut_tot} m")
@@ -55,7 +58,7 @@ def main():
     print(f"Stade développement : {args.fk_stadedev}")
     print(f"Nom latin : {args.nomlatin}")
     print()
-    print(f"Age estimé prédit : {prediction:.1f} ans")
+    print(f"Age estimé prédit : {prediction}")
 
 
 if __name__ == '__main__':
