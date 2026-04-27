@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualisation des arbres</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <!-- Bibliothèque Plotly -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1>Gestion du Patrimoine Arboré</h1>
+    </header>
+
+    <!-- NAVBAR -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="ajout_arbre.html">Ajouter un arbre</a></li>
+            <li><a href="visualisation_arbre.html">Visualisation</a></li>
+            <li><a href="#">Prédictions</a></li>
+        </ul>
+    </nav>
+
+    <!-- CONTENU -->
+    <main>
+        <section class="card">
+            <h2>Visualisation des arbres</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Espèce</th>
+                            <th>Hauteur totale</th>
+                            <th>Hauteur tronc</th>
+                            <th>Diamètre</th>
+                            <th>Remarquable</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                            <th>État</th>
+                            <th>Stade</th>
+                            <th>Port</th>
+                            <th>Pied</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-arbres">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="map"></div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Projet FISA4 - Web / IA / Big Data - 2026</p>
+    </footer>
+
+    <script src="../assets/js/visualisation_arbre.js"></script>
+</body>
+</html>
