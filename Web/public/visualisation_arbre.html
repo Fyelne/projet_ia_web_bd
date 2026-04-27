@@ -27,6 +27,8 @@
 
     <!-- CONTENU -->
     <main>
+        <div id="map"></div>
+
         <section class="card">
             <h2>Visualisation des arbres</h2>
 
@@ -51,8 +53,23 @@
                     </tbody>
                 </table>
             </div>
+            <div class="pagination-container">
+                <div class="pagination-size">
+                    <label for="limite-lignes">Lignes par page :</label>
+                    <select id="limite-lignes">
+                        <option value="10">10</option>
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
 
-            <div id="map"></div>
+                <div class="pagination-buttons">
+                    <button id="btn-precedent" type="button">Précédent</button>
+                    <span id="page-info">Page 1</span>
+                    <button id="btn-suivant" type="button">Suivant</button>
+                </div>
+            </div>
         </section>
     </main>
 

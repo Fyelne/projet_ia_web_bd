@@ -29,13 +29,22 @@ const arbres = [
     }
 ];
 
-afficherTableau(arbres);
+let pageActuelle = 1;
+let lignesParPage = 25;
+
+initialiserPagination();
+afficherTableauPagination();
 afficherCarte(arbres);
 
-function afficherTableau(arbres) {
+function afficherTableauPagination() {
     const tbody = document.getElementById("table-arbres");
+    tbody.innerHTML = "";
 
-    arbres.forEach(arbre => {
+    const debut = (pageActuelle - 1) * lignesParPage;
+    const fin = debut + lignesParPage;
+    const arbresPage = arbres.slice(debut, fin);
+
+    arbresPage.forEach(arbre => {
         const ligne = document.createElement("tr");
 
         ligne.innerHTML = `
@@ -54,6 +63,8 @@ function afficherTableau(arbres) {
 
         tbody.appendChild(ligne);
     });
+
+    mettreAJourPagination();
 }
 
 function afficherCarte(arbres) {
@@ -91,4 +102,44 @@ function afficherCarte(arbres) {
     };
 
     Plotly.newPlot("map", [trace], layout);
+}
+
+function initialiserPagination() {
+    const selectLimite = document.getElementById("limite-lignes");
+    const btnPrecedent = document.getElementById("btn-precedent");
+    const btnSuivant = document.getElementById("btn-suivant");
+
+    selectLimite.addEventListener("change", function () {
+        lignesParPage = Number(this.value);
+        pageActuelle = 1;
+        afficherTableauPagination();
+    });
+
+    btnPrecedent.addEventListener("click", function () {
+        if (pageActuelle > 1) {
+            pageActuelle--;
+            afficherTableauPagination();
+        }
+    });
+
+    btnSuivant.addEventListener("click", function () {
+        const nombrePages = Math.ceil(arbres.length / lignesParPage);
+
+        if (pageActuelle < nombrePages) {
+            pageActuelle++;
+            afficherTableauPagination();
+        }
+    });
+}
+
+function mettreAJourPagination() {
+    const nombrePages = Math.ceil(arbres.length / lignesParPage);
+    const pageInfo = document.getElementById("page-info");
+    const btnPrecedent = document.getElementById("btn-precedent");
+    const btnSuivant = document.getElementById("btn-suivant");
+
+    pageInfo.textContent = `Page ${pageActuelle} / ${nombrePages}`;
+
+    btnPrecedent.disabled = pageActuelle === 1;
+    btnSuivant.disabled = pageActuelle === nombrePages;
 }
