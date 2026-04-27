@@ -26,6 +26,19 @@ const arbres = [
         stade: "Jeune",
         port: "Semi-libre",
         pied: "Gazon"
+    },
+    {
+        espece: "Chêne",
+        hauteur_totale: 20.2,
+        hauteur_tronc: 5.5,
+        diametre: 28,
+        remarquable: "Non",
+        latitude: 49.847,
+        longitude: 3.288,
+        etat: "En place",
+        stade: "Adulte",
+        port: "Libre",
+        pied: "Terre"
     }
 ];
 

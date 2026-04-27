@@ -20,10 +20,10 @@ function afficherCarteClusters(arbres) {
             lat: arbresCluster.map(arbre => arbre.latitude),
             lon: arbresCluster.map(arbre => arbre.longitude),
             text: arbresCluster.map(arbre =>
-                `${arbre.espece}<br>
-                Cluster : ${arbre.cluster}<br>
-                Hauteur : ${arbre.hauteur_totale} m<br>
-                Diamètre : ${arbre.diametre} cm`
+                `Cluster : ${arbre.cluster}<br><br>` +
+                `${arbre.espece}<br>` +
+                `Hauteur : ${arbre.hauteur_totale} m<br>` +
+                `Diamètre : ${arbre.diametre} cm`
             ),
             marker: {
                 size: 12

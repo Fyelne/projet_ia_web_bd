@@ -1,8 +1,10 @@
 <?php
 
 /**
- * Fonction pour exécuter un script Python.
- * Le script Python doit se trouver dans Web/assets/py_scripts/.
+ * Fonction pour exécuter un script Python
+ * @param string $scriptName Nom du fichier dans le dossier py_scripts
+ * @param array $args Tableau associatif des arguments (--key => value)
+ * @return string Résultat du script
  */
 function runPythonScript($scriptName, $args = []) {
     $scriptPath = __DIR__ . "/../assets/py_scripts/" . $scriptName;
@@ -18,7 +20,10 @@ function runPythonScript($scriptName, $args = []) {
 }
 
 /**
- * Envoie une réponse JSON au JavaScript.
+ * Envoie une réponse JSON au front
+ * @param bool $success Résultat de l'opération
+ * @param mixed $data Données
+ * @param mixed $error Message d'erreur
  */
 function sendJsonResponse($success, $data = null, $error = null) {
     header("Content-Type: application/json; charset=utf-8");
@@ -33,10 +38,7 @@ function sendJsonResponse($success, $data = null, $error = null) {
 }
 
 /**
- * Fonctionnalité 4 : prédiction des clusters.
- * Le front-end envoie les arbres en JSON.
- * PHP appelle client1.py pour chaque arbre.
- * PHP renvoie les arbres avec un champ cluster.
+ * Prédiction des clusters
  */
 if (isset($_GET["action"]) && $_GET["action"] === "predict_clusters") {
     $rawInput = file_get_contents("php://input");
@@ -68,7 +70,6 @@ if (isset($_GET["action"]) && $_GET["action"] === "predict_clusters") {
     sendJsonResponse(true, $resultats, null);
 }
 
-// Message simple si le fichier est ouvert directement dans le navigateur.
-echo "script.php fonctionne. Utilisez script.php?action=predict_clusters pour lancer la prédiction des clusters.";
+echo "API running...";
 
 ?>
