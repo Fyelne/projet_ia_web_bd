@@ -157,7 +157,17 @@ Le travail est structuré en trois parties principales : Big Data, Intelligence 
 
 #heading(numbering: none)[Partie IA: ]
 
-= Besoin client 1 : Visualisation sur carte
+= Gantt 
+
+#figure(
+      image("../graph/gantt.png", width: 100%),
+      caption: [
+        Matrice de confusion
+      ],
+    ),
+#v(0.3em)
+
+= Besoin client 1 : Visualisation sur carte (Cholan S.)
 
 == Objectif
 
@@ -250,7 +260,7 @@ Le clustering permet de regrouper de manière efficace les arbres selon leur tai
 
 La visualisation sur carte apporte une dimension supplémentaire en permettant une analyse de la répartition géographique des arbres à Saint-Quentin.
 
-= Besoin client 2 : Modèle de prédiction de l'âge
+= Besoin client 2 : Modèle de prédiction de l'âge (Andy N.)
 
 == Objectif
 
@@ -366,7 +376,7 @@ Pour utiliser le script il suffit de lancer le terminal au niveau du fichier scr
 python script.py --haut_tot 12.0  --haut_tronc 2.5 --tronc_diam 150 --fk_stadedev adulte --nomlatin TILCOR
 ```
 
-= Besoin client 3 : Système d'alerte pour les tempêtes
+= Besoin client 3 : Système d'alerte pour les tempêtes (Ange C.)
 
 
 == Objectif

@@ -6,7 +6,7 @@ import pandas as pd
 import warnings
 
 """
-Script du groupe de taille (Besoin Client 1)
+Script de prédiction du groupe de taille (Besoin Client 1)
 
 Exemple :
     python script.py --haut_tot 12.0 --nb_clusters 3

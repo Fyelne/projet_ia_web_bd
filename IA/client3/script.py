@@ -1,5 +1,5 @@
 """
-Script de prédiction de l'âge d'un arbre (Besoin Client 2)
+Script de prédiction du risque de déracinement lors d'une tempête (Besoin Client 3)
 
 Exemple :
     python script.py --haut_tot 2.3 --haut_tronc 1.1 --tronc_diam 4.6 --age_estim 3.4 \
