@@ -119,8 +119,6 @@ button:hover {
     background-color: #16a34a;
 }
 
-
-
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -191,4 +189,11 @@ tr:hover {
 
 #page-info {
     font-weight: bold;
+}
+
+#map-clusters {
+    width: 100%;
+    height: 550px;
+    border-radius: 15px;
+    overflow: hidden;
 }

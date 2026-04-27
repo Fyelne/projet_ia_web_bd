@@ -35,6 +35,7 @@ let lignesParPage = 25;
 initialiserPagination();
 afficherTableauPagination();
 afficherCarte(arbres);
+initialiserPredictionClusters();
 
 function afficherTableauPagination() {
     const tbody = document.getElementById("table-arbres");
@@ -142,4 +143,40 @@ function mettreAJourPagination() {
 
     btnPrecedent.disabled = pageActuelle === 1;
     btnSuivant.disabled = pageActuelle === nombrePages;
+}
+
+function initialiserPredictionClusters() {
+    const bouton = document.getElementById("btn-predire-clusters");
+    const selectNbClusters = document.getElementById("nb-clusters");
+
+    if (!bouton) return;
+
+    bouton.addEventListener("click", function () {
+        const nbClusters = selectNbClusters.value;
+
+        fetch(`./script.php?action=predict_clusters&nb_clusters=${nbClusters}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(arbres)
+        })
+        .then(response => response.json())
+        .then(resultat => {
+            if (!resultat.success) {
+                alert("Erreur : " + resultat.error);
+                return;
+            }
+
+            // Stockage temporaire
+            sessionStorage.setItem("arbresAvecClusters", JSON.stringify(resultat.data));
+
+            // Redirection vers la page de résultats
+            window.location.href = "prediction_clusters.html";
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Erreur serveur");
+        });
+    });
 }

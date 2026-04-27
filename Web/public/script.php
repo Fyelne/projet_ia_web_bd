@@ -1,53 +1,74 @@
 <?php
 
 /**
- * Fonction pour exécuter un script Python
- * @param string $scriptName Nom du fichier dans le dossier py_scripts
- * @param array $args Tableau associatif des arguments (--key => value)
- * @return string Résultat du script
+ * Fonction pour exécuter un script Python.
+ * Le script Python doit se trouver dans Web/assets/py_scripts/.
  */
 function runPythonScript($scriptName, $args = []) {
     $scriptPath = __DIR__ . "/../assets/py_scripts/" . $scriptName;
-    
-    // Construction de la commande
-    $command = __DIR__ . "/../../venv/bin/python " . escapeshellarg($scriptPath);
-    
+    $pythonPath = __DIR__ . "/../../venv/bin/python";
+
+    $command = escapeshellarg($pythonPath) . " " . escapeshellarg($scriptPath);
+
     foreach ($args as $key => $value) {
         $command .= " " . escapeshellarg($key) . " " . escapeshellarg($value);
     }
 
-    // Exécution de la commande
-    $output = shell_exec($command . " 2>&1");
-    return $output;
+    return shell_exec($command . " 2>&1");
 }
 
-echo "--- EXEMPLES D'UTILISATION ---<br>";
+/**
+ * Envoie une réponse JSON au JavaScript.
+ */
+function sendJsonResponse($success, $data = null, $error = null) {
+    header("Content-Type: application/json; charset=utf-8");
 
-$res1 = runPythonScript("client1.py", [
-    "--haut_tot" => "12.0",
-    "--nb_clusters" => "3"
-]);
-echo "Résultat Client 1 : " . $res1 . "<br>";
+    echo json_encode([
+        "success" => $success,
+        "data" => $data,
+        "error" => $error
+    ]);
 
-$res2 = runPythonScript("client2.py", [
-    "--haut_tot" => "12.0",
-    "--haut_tronc" => "2.5",
-    "--tronc_diam" => "150",
-    "--fk_stadedev" => "adulte"
-]);
-echo "Résultat Script 2 : " . $res2 . "<br>";
+    exit;
+}
 
-$res3 = runPythonScript("client3.py", [
-    "--haut_tot" => "2.3",
-    "--haut_tronc" => "1.1",
-    "--tronc_diam" => "4.6",
-    "--age_estim" => "3.4",
-    "--fk_port" => "semi libre",
-    "--fk_pied" => "gazon",
-    "--nomfrancais" => "POPALB",
-    "--clc_quartier" => "HARLY",
-    "--clc_secteur" => "Rue Laplace"
-]);
-echo "Résultat Script 3 : " . $res3;
+/**
+ * Fonctionnalité 4 : prédiction des clusters.
+ * Le front-end envoie les arbres en JSON.
+ * PHP appelle client1.py pour chaque arbre.
+ * PHP renvoie les arbres avec un champ cluster.
+ */
+if (isset($_GET["action"]) && $_GET["action"] === "predict_clusters") {
+    $rawInput = file_get_contents("php://input");
+    $arbres = json_decode($rawInput, true);
+
+    if (!is_array($arbres)) {
+        sendJsonResponse(false, null, "Les données envoyées ne sont pas valides.");
+    }
+
+    $nbClusters = isset($_GET["nb_clusters"]) ? $_GET["nb_clusters"] : "3";
+    $resultats = [];
+
+    foreach ($arbres as $arbre) {
+        if (!isset($arbre["hauteur_totale"])) {
+            $arbre["cluster"] = "Non calculé";
+            $resultats[] = $arbre;
+            continue;
+        }
+
+        $sortiePython = runPythonScript("client1.py", [
+            "--haut_tot" => $arbre["hauteur_totale"],
+            "--nb_clusters" => $nbClusters
+        ]);
+
+        $arbre["cluster"] = trim($sortiePython);
+        $resultats[] = $arbre;
+    }
+
+    sendJsonResponse(true, $resultats, null);
+}
+
+// Message simple si le fichier est ouvert directement dans le navigateur.
+echo "script.php fonctionne. Utilisez script.php?action=predict_clusters pour lancer la prédiction des clusters.";
 
 ?>
