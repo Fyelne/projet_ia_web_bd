@@ -502,7 +502,7 @@ Cependant, les trois algorithmes présentent des performances globales similaire
      figure(
       image("../graph/forestclassifier_matrice.png", width: 100%),
       caption: [
-        Via CatBoost
+        Via RandomForest
       ],
     ),
 )
