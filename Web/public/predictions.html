@@ -2,20 +2,17 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Visualisation des arbres</title>
+    <title>Prédiction des clusters</title>
     <link rel="icon" type="image/png" href="../assets/image/logo_sq.png">
     <link rel="stylesheet" href="../assets/css/style.css">
-    <!-- Bibliothèque Plotly -->
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 </head>
 <body>
-
-    <!-- HEADER -->
+    
     <header>
         <h1>Gestion du Patrimoine Arboré</h1>
     </header>
-
-    <!-- NAVBAR -->
+    
     <nav>
         <ul>
             <li><a href="index.html">Accueil</a></li>
@@ -24,19 +21,37 @@
             <li><a href="predictions.html">Prédictions</a></li>
         </ul>
     </nav>
-
-    <!-- CONTENU -->
+    
     <main>
         <section class="card">
-            <h2>Affichage des arbres</h2> 
-            <div id="map"></div>
+            <h2>Prédiction des clusters</h2>
+            <p>Les arbres sont affichés avec une couleur différente selon leur cluster.</p>
+            
+            <div id="map-clusters">
+                <div class="info-div" id="trt-info">Aucun Traitement en cours</div>
+            </div>
+            <div class="actions-visualisation">
+                <label for="nb-clusters">Nombre de clusters :</label>
+                <select id="nb-clusters">
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                </select>
+                <button id="btn-predire-clusters" type="button" onclick="afficherCarteClusters()">Prédire les clusters</button>
+            </div>
         </section>
+        
         <section class="card">
             <h2>Liste des arbres</h2>
-            <div class="table-container">
-                <table id="table-arbres">
+            <!-- Groupe de 2 boutons Prédire l'age et Prédire le risque -->
+            <div class="actions-visualisation">
+                <button id="btn-predire-age" type="button" onclick="predictAge()">Prédire l'age</button>
+                <button id="btn-predire-risque" type="button" onclick="predictRisk()">Prédire le risque</button>
+            </div>
+            <div id="table-container">
+                <table id="table-arbres" class=" with-selection">
                     <thead>
                         <tr>
+                            <th>Selection</th>
                             <th>Espèce</th>
                             <th>Hauteur totale</th>
                             <th>Hauteur tronc</th>
@@ -64,7 +79,7 @@
                         <option value="100">100</option>
                     </select>
                 </div>
-
+                
                 <div class="pagination-buttons">
                     <button id="btn-precedent" type="button">Précédent</button>
                     <span id="page-info">Page 1</span>
@@ -73,12 +88,12 @@
             </div>
         </section>
     </main>
-
-    <!-- FOOTER -->
+    
     <footer>
         <p>Projet FISA4 - Web / IA / Big Data - 2026</p>
     </footer>
-
+    
     <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/predictions.js"></script>
 </body>
 </html>

@@ -104,7 +104,8 @@ function afficherCarte(arbres) {
  * Affiche le tableau
  */
 function afficherTableau() {
-    const tbody = document.getElementById('table-arbres');
+    const tableEl = document.getElementById('table-arbres');
+    const tbody = document.getElementById('table-body');
     if (!tbody) return;
 
     // Aucun arbre
@@ -118,20 +119,25 @@ function afficherTableau() {
     const debut = (pageActuelle - 1) * lignesParPage;
     const page  = arbresData.slice(debut, debut + lignesParPage);
 
+    // Ajouter la selection 
+    const withSelect = tableEl?.classList.contains('with-selection');
+    console.log(withSelect, tableEl);
+
     // Création du tableau
-    tbody.innerHTML = page.map(a =>
+    tbody.innerHTML = page.map(arbre =>
         '<tr>' +
-        '<td>' + (a.nom_commun || '') + '</td>' +
-        '<td>' + (a.hauteur_totale  != null ? a.hauteur_totale  : '') + '</td>' +
-        '<td>' + (a.hauteur_tronc   != null ? a.hauteur_tronc   : '') + '</td>' +
-        '<td>' + (a.diametre_tronc  != null ? a.diametre_tronc  : '') + '</td>' +
-        '<td>' + (a.est_remarquable == 1 ? 'oui' : 'non') + '</td>' +
-        '<td>' + (a.latitude  || '') + '</td>' +
-        '<td>' + (a.longitude || '') + '</td>' +
-        '<td><span class="badge">' + (a.libelle_etat  || '') + '</span></td>' +
-        '<td>' + (a.libelle_stade || '') + '</td>' +
-        '<td>' + (a.libelle_port  || '') + '</td>' +
-        '<td>' + (a.libelle_pied  || '') + '</td>' +
+        (withSelect ? '<td><input type="checkbox" data-id="' + arbre.id + '"></td>' : '') +
+        '<td>' + (arbre.nom_commun || '') + '</td>' +
+        '<td>' + (arbre.hauteur_totale  != null ? arbre.hauteur_totale  : '') + '</td>' +
+        '<td>' + (arbre.hauteur_tronc   != null ? arbre.hauteur_tronc   : '') + '</td>' +
+        '<td>' + (arbre.diametre_tronc  != null ? arbre.diametre_tronc  : '') + '</td>' +
+        '<td>' + (arbre.est_remarquable == 1 ? 'oui' : 'non') + '</td>' +
+        '<td>' + (arbre.latitude  || '') + '</td>' +
+        '<td>' + (arbre.longitude || '') + '</td>' +
+        '<td><span class="badge">' + (arbre.libelle_etat  || '') + '</span></td>' +
+        '<td>' + (arbre.libelle_stade || '') + '</td>' +
+        '<td>' + (arbre.libelle_port  || '') + '</td>' +
+        '<td>' + (arbre.libelle_pied  || '') + '</td>' +
         '</tr>'
     ).join('');
 

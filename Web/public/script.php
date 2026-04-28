@@ -44,14 +44,16 @@ if (isset($_GET["action"]) && $_GET["action"] === "predict_clusters") {
     $rawInput = file_get_contents("php://input");
     $arbres = json_decode($rawInput, true);
 
-    if (!is_array($arbres)) {
+    $arbres_data = $arbres["data"];
+
+    if (!is_array($arbres_data) || empty($arbres_data)) {
         sendJsonResponse(false, null, "Les données envoyées ne sont pas valides.");
     }
 
     $nbClusters = isset($_GET["nb_clusters"]) ? $_GET["nb_clusters"] : "3";
     $resultats = [];
 
-    foreach ($arbres as $arbre) {
+    foreach ($arbres_data as $arbre) {
         if (!isset($arbre["hauteur_totale"])) {
             $arbre["cluster"] = "Non calculé";
             $resultats[] = $arbre;

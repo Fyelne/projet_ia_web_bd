@@ -1,24 +1,17 @@
-const API = '../assets/php/request.php';
-
-
-async function loadArbres() {
-    const arbres = await fetch(API + '/arbres')
-        .catch(err => console.error('GET error:', err));
-
-    return arbres.json();
-}
 
 async function getClusters() {
     const nbClusters = document.getElementById("nb-clusters").value;
 
-    console.log(await loadArbres());
+    console.log(nbClusters + " " + arbresData);
 
     const resultat = await fetch(`./script.php?action=predict_clusters&nb_clusters=${nbClusters}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: await loadArbres()
+        body: JSON.stringify({
+            data: arbresData
+        })
     })
     .then(response => response.json())
     .then(resultat => {
@@ -41,7 +34,17 @@ async function getClusters() {
 
 
 
-function afficherCarteClusters(arbres) {
+async function afficherCarteClusters() {
+
+    const trt_info = document.getElementById('trt-info');
+
+    trt_info.textContent = 'Traitement en cours...';
+
+    const mapDiv = document.getElementById('map-clusters');
+
+    if (!mapDiv || typeof Plotly === 'undefined') return;
+
+    const arbres = await getClusters();
 
     const clusters = [...new Set(arbres.map(arbre => arbre.cluster))];
     
@@ -84,4 +87,27 @@ function afficherCarteClusters(arbres) {
     };
     
     Plotly.newPlot("map-clusters", traces, layout);
+
+    trt_info.textContent = '';
+}
+
+function predictAge() {
+    const arbres = document.getElementById("arbres").value;
+    
+    fetch(`./script.php?action=predict_age&arbres=${arbres}`)
+    .then(response => response.json())
+    .then(resultat => {
+        if (!resultat.success) {
+            alert("Erreur : " + resultat.error);
+            return;
+        }
+        
+        console.log(resultat.data);
+        
+        return resultat.data;
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Erreur serveur");
+    });
 }

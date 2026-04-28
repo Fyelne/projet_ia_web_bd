@@ -197,3 +197,10 @@ tr:hover {
     border-radius: 15px;
     overflow: hidden;
 }
+
+.info-div {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
