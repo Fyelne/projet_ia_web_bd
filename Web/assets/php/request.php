@@ -13,10 +13,7 @@ if (!$db) { http_response_code(503); exit; }
 $path     = isset($_SERVER['PATH_INFO']) ? trim($_SERVER['PATH_INFO'], '/') : '';
 $method   = $_SERVER['REQUEST_METHOD'];
 
-// ── /refs ────────────────────────────────────────────────────────────────────
 
-
-// ── /arbres ──────────────────────────────────────────────────────────────────
 if ($path === 'arbres')
 {
   if ($method === 'GET')
