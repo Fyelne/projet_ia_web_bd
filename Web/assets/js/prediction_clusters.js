@@ -1,5 +1,6 @@
 const API = '../assets/php/request.php';
 
+
 async function loadArbres() {
     const arbres = await fetch(API + '/arbres')
         .catch(err => console.error('GET error:', err));

@@ -70,13 +70,13 @@ function dbGetArbres($db)
 function dbAddArbre($db, $data)
 {
 
-  $id_espece = getOrCreateEspeceId($db, $data['id_espece']);
+  $id_espece = getOrCreateEspeceId($db, $data['espece']);
 
 
-  $id_etat  = getIdFromLibelle($db, 'etat_arbre', 'id_etat', 'libelle_etat', $data['libelle_etat']);
-  $id_stade = getIdFromLibelle($db, 'stade_developpement', 'id_stade', 'libelle_stade', $data['libelle_stade']);
-  $id_port  = getIdFromLibelle($db, 'type_port', 'id_port', 'libelle_port', $data['libelle_port']);
-  $id_pied  = getIdFromLibelle($db, 'type_pied', 'id_pied', 'libelle_pied', $data['libelle_pied']);
+  $id_etat  = getIdFromLibelle($db, 'etat_arbre', 'id_etat', 'libelle_etat', $data['etat']);
+  $id_stade = getIdFromLibelle($db, 'stade_developpement', 'id_stade', 'libelle_stade', $data['stade']);
+  $id_port  = getIdFromLibelle($db, 'type_port', 'id_port', 'libelle_port', $data['port']);
+  $id_pied  = getIdFromLibelle($db, 'type_pied', 'id_pied', 'libelle_pied', $data['pied']);
 
   try
   {
@@ -94,7 +94,7 @@ function dbAddArbre($db, $data)
     $ok = $stmt->execute([
         ':hauteur_totale' => $data['hauteur_totale'] !== '' ? $data['hauteur_totale'] : null,
         ':hauteur_tronc'  => $data['hauteur_tronc'] !== '' ? $data['hauteur_tronc'] : null,
-        ':diametre_tronc' => $data['diametre_tronc'] !== '' ? $data['diametre_tronc'] : null,
+        ':diametre_tronc' => $data['diametre'] !== '' ? $data['diametre'] : null,
 
         ':est_remarquable' => !empty($data['est_remarquable']) ? 1 : 0,
 
@@ -129,7 +129,7 @@ function dbAddArbre($db, $data)
 // link table espèce-arbre
 function getOrCreateEspeceId($db, $nom)
 {
-  $nom = ucfirst(strtolower(trim($nom)));
+  $nom = ucfirst(trim($nom));
 
   $stmt = $db->prepare("SELECT id_espece FROM espece WHERE nom_commun = ?");
   $stmt->execute([$nom]);

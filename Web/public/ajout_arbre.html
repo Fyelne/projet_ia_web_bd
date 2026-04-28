@@ -27,10 +27,10 @@
     <main>
         <section class="card">
             <h2>Ajouter un Arbre</h2>
-            <form>
+            <form id="tree-form" action="../assets/php/request.php/arbres" method="post">
                 <div class="form-group">
                     <label for="espece">Espèce :</label>
-                    <input type="text" id="espece" name="espece" placeholder="Ex: Chêne" required>
+                    <input type="text" id="f-espece" name="espece" placeholder="Ex: Chêne" required>
                 </div>
 
                 <div class="form-group">
@@ -69,7 +69,6 @@
                 <div class="form-group">
                     <label for="etat">État :</label>
                     <select id="etat" name="etat">
-                        <option value="NA">Non-défini</option>
                         <option value="EN PLACE">En place</option>
                         <option value="ABATTU">Abattu</option>
                         <option value="Essouché">Essouché</option>
@@ -80,7 +79,6 @@
                 <div class="form-group">
                     <label for="stade">Stade de développement :</label>
                     <select id="stade" name="stade">
-                        <option value="NA">Non-défini</option>
                         <option value="jeune">Jeune</option>
                         <option value="adulte">Adulte</option>
                         <option value="vieux">Vieux</option>
@@ -91,7 +89,6 @@
                 <div class="form-group">
                     <label for="port">Type de port :</label>
                     <select id="port" name="port">
-                        <option value="NA">Non-défini</option>
                         <option value="semi libre">Semi-libre</option>
                         <option value="réduit">Réduit</option>
                         <option value="réduit relâché">Réduit relâché</option>
@@ -111,7 +108,6 @@
                 <div class="form-group">
                     <label for="pied">Type de pied :</label>
                     <select id="pied" name="pied">
-                        <option value="NA">Non-défini</option>
                         <option value="gazon">Gazon</option>
                         <option value="fosse arbre">Fosse arbre</option>
                         <option value="Revetement non permeable">Revetement non permeable</option>

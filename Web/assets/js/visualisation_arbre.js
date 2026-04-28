@@ -2,8 +2,11 @@
 
 const API = '../assets/php/request.php';
 
+// Liste des arbres
 let arbresData    = [];
+// Page actuelle du tableau
 let pageActuelle  = 1;
+// Nombre de lignes par page (Tableau)
 let lignesParPage = 25;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,10 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
+/**
+ * Convertit les coordonnées CC49 en WGS84
+ * @param {number} lat_bdd 
+ * @param {number} lon_bdd 
+ * @returns {object} Coordonnées WGS84
+ */
 function cc49ToWgs84(lat_bdd, lon_bdd) {
-    const x = lon_bdd;  // X easting  (colonne longitude en BDD)
-    const y = lat_bdd;  // Y northing (colonne latitude  en BDD)
+    const x = lon_bdd;
+    const y = lat_bdd;
 
     const e  = 0.08181919104281579;
     const n  = 0.7569201448804344;
@@ -49,6 +57,10 @@ function cc49ToWgs84(lat_bdd, lon_bdd) {
 }
 
 
+/**
+ * Affiche la carte
+ * @param {array} arbres Liste des arbres 
+ */
 function afficherCarte(arbres) {
     const mapDiv = document.getElementById('map');
     if (!mapDiv || typeof Plotly === 'undefined' || !arbres.length) return;
@@ -88,27 +100,32 @@ function afficherCarte(arbres) {
     });
 }
 
-
+/**
+ * Affiche le tableau
+ */
 function afficherTableau() {
     const tbody = document.getElementById('table-arbres');
     if (!tbody) return;
 
+    // Aucun arbre
     if (!arbresData.length) {
         tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#999">Aucun arbre.</td></tr>';
         mettreAJourPagination();
         return;
     }
 
+    // Pagination
     const debut = (pageActuelle - 1) * lignesParPage;
     const page  = arbresData.slice(debut, debut + lignesParPage);
 
+    // Création du tableau
     tbody.innerHTML = page.map(a =>
         '<tr>' +
         '<td>' + (a.nom_commun || '') + '</td>' +
         '<td>' + (a.hauteur_totale  != null ? a.hauteur_totale  : '') + '</td>' +
         '<td>' + (a.hauteur_tronc   != null ? a.hauteur_tronc   : '') + '</td>' +
         '<td>' + (a.diametre_tronc  != null ? a.diametre_tronc  : '') + '</td>' +
-        '<td>' + (a.est_remarquable == 1 ? '<span class="badge badge--gold">Oui</span>' : '') + '</td>' +
+        '<td>' + (a.est_remarquable == 1 ? 'oui' : 'non') + '</td>' +
         '<td>' + (a.latitude  || '') + '</td>' +
         '<td>' + (a.longitude || '') + '</td>' +
         '<td><span class="badge">' + (a.libelle_etat  || '') + '</span></td>' +
@@ -121,7 +138,9 @@ function afficherTableau() {
     mettreAJourPagination();
 }
 
-
+/**
+ * Initialise la pagination
+ */
 function initialiserPagination() {
     document.getElementById('limite-lignes')?.addEventListener('change', function () {
         lignesParPage = Number(this.value);
@@ -136,6 +155,9 @@ function initialiserPagination() {
     });
 }
 
+/**
+ * Met a jour la pagination
+ */
 function mettreAJourPagination() {
     const total = Math.max(1, Math.ceil(arbresData.length / lignesParPage));
     if (document.getElementById('page-info'))     document.getElementById('page-info').textContent = 'Page ' + pageActuelle + ' / ' + total;
