@@ -1,18 +1,52 @@
-const arbresAvecClusters = JSON.parse(sessionStorage.getItem("arbresAvecClusters")) || [];
+const API = '../assets/php/request.php';
 
-if (arbresAvecClusters.length === 0) {
-    document.getElementById("map-clusters").innerHTML =
-        "Aucune donnée disponible. Retournez sur la page Visualisation et cliquez sur Prédire les clusters.";
-} else {
-    afficherCarteClusters(arbresAvecClusters);
+async function loadArbres() {
+    const arbres = await fetch(API + '/arbres')
+        .catch(err => console.error('GET error:', err));
+
+    return arbres.json();
 }
 
-function afficherCarteClusters(arbres) {
-    const clusters = [...new Set(arbres.map(arbre => arbre.cluster))];
+async function getClusters() {
+    const nbClusters = document.getElementById("nb-clusters").value;
 
+    console.log(await loadArbres());
+
+    const resultat = await fetch(`./script.php?action=predict_clusters&nb_clusters=${nbClusters}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: await loadArbres()
+    })
+    .then(response => response.json())
+    .then(resultat => {
+        if (!resultat.success) {
+            alert("Erreur : " + resultat.error);
+            return;
+        }
+        
+        console.log(resultat.data);
+        
+        return resultat.data;
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Erreur serveur");
+    });
+
+    return resultat;
+}
+
+
+
+function afficherCarteClusters(arbres) {
+
+    const clusters = [...new Set(arbres.map(arbre => arbre.cluster))];
+    
     const traces = clusters.map(cluster => {
         const arbresCluster = arbres.filter(arbre => arbre.cluster === cluster);
-
+        
         return {
             type: "scattermapbox",
             mode: "markers",
@@ -30,7 +64,7 @@ function afficherCarteClusters(arbres) {
             }
         };
     });
-
+    
     const layout = {
         mapbox: {
             style: "open-street-map",
@@ -47,6 +81,6 @@ function afficherCarteClusters(arbres) {
             r: 0
         }
     };
-
+    
     Plotly.newPlot("map-clusters", traces, layout);
 }

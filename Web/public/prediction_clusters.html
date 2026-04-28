@@ -28,6 +28,14 @@
         <p>Les arbres sont affichés avec une couleur différente selon leur cluster.</p>
 
         <div id="map-clusters"></div>
+        <div class="actions-visualisation">
+            <label for="nb-clusters">Nombre de clusters :</label>
+            <select id="nb-clusters">
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+            </select>
+            <button id="btn-predire-clusters" type="button" onclick="getClusters()">Prédire les clusters</button>
+        </div>
     </section>
 </main>
 

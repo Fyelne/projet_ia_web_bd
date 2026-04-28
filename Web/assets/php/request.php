@@ -14,6 +14,7 @@ $path     = isset($_SERVER['PATH_INFO']) ? trim($_SERVER['PATH_INFO'], '/') : ''
 $method   = $_SERVER['REQUEST_METHOD'];
 
 
+
 if ($path === 'arbres')
 {
   if ($method === 'GET')
