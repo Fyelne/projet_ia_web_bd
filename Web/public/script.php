@@ -8,7 +8,7 @@
  */
 function runPythonScript($scriptName, $args = []) {
     $scriptPath = __DIR__ . "/../assets/py_scripts/" . $scriptName;
-    $pythonPath = __DIR__ . "/../../venv/bin/python";
+    $pythonPath = "/usr/bin/python";
 
     $command = escapeshellarg($pythonPath) . " " . escapeshellarg($scriptPath);
 
@@ -40,38 +40,73 @@ function sendJsonResponse($success, $data = null, $error = null) {
 /**
  * Prédiction des clusters
  */
-if (isset($_GET["action"]) && $_GET["action"] === "predict_clusters") {
+if (isset($_GET["action"])) {
     $rawInput = file_get_contents("php://input");
     $arbres = json_decode($rawInput, true);
-
+    
     $arbres_data = $arbres["data"];
-
-    if (!is_array($arbres_data) || empty($arbres_data)) {
+    
+    if (!is_array($arbres_data)) {
         sendJsonResponse(false, null, "Les données envoyées ne sont pas valides.");
     }
+    if($_GET["action"] === "predict_clusters"){
+        $nbClusters = isset($_GET["nb_clusters"]) ? $_GET["nb_clusters"] : "3";
+        $resultats = [];
 
-    $nbClusters = isset($_GET["nb_clusters"]) ? $_GET["nb_clusters"] : "3";
-    $resultats = [];
+        foreach ($arbres_data as $arbre) {
+            if (!isset($arbre["hauteur_totale"])) {
+                $arbre["cluster"] = "Non calculé";
+                $resultats[] = $arbre;
+                continue;
+            }
 
-    foreach ($arbres_data as $arbre) {
-        if (!isset($arbre["hauteur_totale"])) {
-            $arbre["cluster"] = "Non calculé";
+            $sortiePython = runPythonScript("client1.py", [
+                "--haut_tot" => $arbre["hauteur_totale"],
+                "--nb_clusters" => $nbClusters
+            ]);
+
+            $arbre["cluster"] = trim($sortiePython);
             $resultats[] = $arbre;
-            continue;
         }
 
-        $sortiePython = runPythonScript("client1.py", [
+        sendJsonResponse(true, $resultats, null);
+    } else if ($_GET["action"] === "predict_age") {
+        $arbre = $arbres_data[0];
+        $resultats = [];
+
+        $sortiePython = runPythonScript("client2.py", [
             "--haut_tot" => $arbre["hauteur_totale"],
-            "--nb_clusters" => $nbClusters
+            "--haut_tronc" => $arbre["hauteur_tronc"],
+            "--tronc_diam" => $arbre["diametre_tronc"],
+            "--fk_stadedev" => $arbre["libelle_stade"],
+            "--nomlatin" => $arbre["nom_commun"]
         ]);
 
-        $arbre["cluster"] = trim($sortiePython);
+        $arbre["age_estim"] = trim($sortiePython);
         $resultats[] = $arbre;
+        sendJsonResponse(true, $resultats, null);
+    } else if ($_GET["action"] === "predict_risque") {
+        $arbre = $arbres_data[0];
+        $resultats = [];
+        
+        $sortiePython = runPythonScript("client3.py", [
+                "--haut_tot" => $arbre["hauteur_totale"],
+                "--haut_tronc" => $arbre["hauteur_tronc"],
+                "--tronc_diam" => $arbre["diametre_tronc"],
+                "--age_estim" => "50",
+                "--fk_port" => $arbre["libelle_port"],
+                "--fk_pied" => $arbre["libelle_pied"],
+                "--nomfrancais" => $arbre["nom_commun"],
+                "--clc_quartier" => "Quartier Remicourt",
+                "--clc_secteur" => "Parc des Champs-Elysées",
+                "--x" => $arbre["latitude"],
+                "--y" => $arbre["longitude"],
+                "--seuil" => "0.2" 
+        ]);
+
+        $arbre["risque"] = trim($sortiePython);
+        $resultats[] = $arbre;
+        sendJsonResponse(true, $resultats, null);
     }
-
-    sendJsonResponse(true, $resultats, null);
 }
-
-echo "API running...";
-
 ?>

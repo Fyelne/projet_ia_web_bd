@@ -126,7 +126,7 @@ function afficherTableau() {
     // Création du tableau
     tbody.innerHTML = page.map(arbre =>
         '<tr>' +
-        (withSelect ? '<td><input type="checkbox" data-id="' + arbre.id + '"></td>' : '') +
+        (withSelect ? '<td><input class="selection-arbre" type="radio" name="selection_arbre" value="' + arbre.id_arbre + '"></td>' : '') +
         '<td>' + (arbre.nom_commun || '') + '</td>' +
         '<td>' + (arbre.hauteur_totale  != null ? arbre.hauteur_totale  : '') + '</td>' +
         '<td>' + (arbre.hauteur_tronc   != null ? arbre.hauteur_tronc   : '') + '</td>' +
